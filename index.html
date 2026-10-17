@@ -69,6 +69,22 @@ p{margin:0}
   background:linear-gradient(90deg,var(--leaf),var(--gold),var(--rose));}
 .nav-toggle{display:none;margin-left:auto;background:none;border:0;padding:8px;cursor:pointer}
 .nav-toggle svg{width:22px;height:22px;stroke:var(--ink);fill:none;stroke-width:1.8}
+.lang{
+  flex:none;font-family:var(--sans);font-size:14px;font-weight:600;
+  letter-spacing:.06em;line-height:1;color:#fff;
+  background:var(--rose-dk);border:0;border-radius:999px;
+  padding:11px 20px;min-width:56px;text-align:center;cursor:pointer;
+  box-shadow:0 2px 10px rgba(216,27,82,.26);
+  transition:background .2s ease,transform .2s ease,box-shadow .2s ease;
+}
+.lang:hover{background:#B8154A;color:#fff;transform:translateY(-1px);box-shadow:0 5px 16px rgba(216,27,82,.34)}
+.lang:active{transform:translateY(0)}
+.lang:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+/* 英文模式下品种卡已显示英文常用名，隐藏大写拉丁名一行，避免重复 */
+html[data-lang="en"] .b-en{display:none}
+html[data-lang="en"] .sec-lead,
+html[data-lang="en"] .why-text p,
+html[data-lang="en"] .f-decl{line-height:1.76;letter-spacing:0}
 
 /* ---------- Hero ---------- */
 .hero{position:relative;padding:clamp(44px,7vw,80px) 0 clamp(52px,7vw,84px);overflow:hidden}
@@ -400,6 +416,8 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
   .nav-links.open{display:flex}
   .nav-links a{padding:11px 0;border-bottom:1px solid var(--line)}
   .nav-toggle{display:block}
+  .lang{margin-left:auto}
+  .nav-toggle{margin-left:14px}
   .stats{grid-template-columns:1fr 1fr}
   .slot{grid-template-columns:1fr auto;row-gap:6px}
   .slot-what{grid-column:1/-1}
@@ -636,13 +654,14 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
     <button class="nav-toggle" id="navToggle" aria-label="展开导航菜单" aria-expanded="false">
       <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
     </button>
-    <div class="nav-links" id="navLinks">
-      <a href="#intro">斗南是什么</a>
-      <a href="#journey">花的旅程</a>
-      <a href="#blooms">当季花历</a>
-      <a href="#visit">怎么逛</a>
-      <a href="#hours">一天</a>
-    </div>
+      <div class="nav-links" id="navLinks">
+        <a href="#intro">斗南是什么</a>
+        <a href="#journey">花的旅程</a>
+        <a href="#blooms">当季花历</a>
+        <a href="#visit">怎么逛</a>
+        <a href="#hours">一天</a>
+      </div>
+      <button class="lang" id="langBtn" type="button" aria-label="切换语言 Switch language">EN</button>
   </div>
   <div class="progress" id="progress" aria-hidden="true"></div>
 </nav>
@@ -1086,32 +1105,35 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
 
   /* 花历数据：months 为 1-12 的上市月份 */
   var DATA = [
-    {cn:"月季",   en:"ROSE",        sym:"f-rose",       m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，冬春品质最好"},
-    {cn:"百合",   en:"LILY",        sym:"f-lily",       m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，3–9 月量大"},
-    {cn:"康乃馨", en:"CARNATION",   sym:"f-carnation",  m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，母亲节前后最旺"},
-    {cn:"非洲菊", en:"GERBERA",     sym:"f-gerbera",    m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，色彩最丰富"},
-    {cn:"满天星", en:"GYPSOPHILA",  sym:"f-gypsophila", m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，常作配花"},
-    {cn:"洋桔梗", en:"LISIANTHUS",  sym:"f-lisianthus", m:[3,4,5,6,7,8,9,10,11],       peak:"5–10 月为盛期"},
-    {cn:"绣球",   en:"HYDRANGEA",   sym:"f-hydrangea",  m:[4,5,6,7,8,9],               peak:"4–9 月，夏季最盛"},
-    {cn:"向日葵", en:"SUNFLOWER",   sym:"f-sunflower",  m:[5,6,7,8,9,10],              peak:"5–10 月"},
-    {cn:"勿忘我", en:"FORGET-ME-NOT",sym:"f-forget",    m:[11,12,1,2,3,4,5],           peak:"11 月至次年 5 月"},
-    {cn:"马蹄莲", en:"CALLA LILY",  sym:"f-calla",      m:[11,12,1,2,3,4],             peak:"11 月至次年 4 月"},
-    {cn:"郁金香", en:"TULIP",       sym:"f-tulip",      m:[1,2,3,4],                   peak:"1–4 月，春季限定"},
-    {cn:"蝴蝶兰", en:"ORCHID",      sym:"f-orchid",     m:[10,11,12,1,2,3],            peak:"10 月至次年 3 月"}
+    {cn:"月季",   en:"ROSE",        sym:"f-rose",       m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，冬春品质最好",   pkEn:"Year-round; best in winter and spring"},
+    {cn:"百合",   en:"LILY",        sym:"f-lily",       m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，3–9 月量大",    pkEn:"Year-round; largest volume March–September"},
+    {cn:"康乃馨", en:"CARNATION",   sym:"f-carnation",  m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，母亲节前后最旺", pkEn:"Year-round; peaks around Mother's Day"},
+    {cn:"非洲菊", en:"GERBERA",     sym:"f-gerbera",    m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，色彩最丰富",     pkEn:"Year-round; the widest range of colours"},
+    {cn:"满天星", en:"GYPSOPHILA",  sym:"f-gypsophila", m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，常作配花",       pkEn:"Year-round; usually used as a filler"},
+    {cn:"洋桔梗", en:"LISIANTHUS",  sym:"f-lisianthus", m:[3,4,5,6,7,8,9,10,11],       peak:"5–10 月为盛期",           pkEn:"Peak season May–October"},
+    {cn:"绣球",   en:"HYDRANGEA",   sym:"f-hydrangea",  m:[4,5,6,7,8,9],               peak:"4–9 月，夏季最盛",        pkEn:"April–September, best in summer"},
+    {cn:"向日葵", en:"SUNFLOWER",   sym:"f-sunflower",  m:[5,6,7,8,9,10],              peak:"5–10 月",                 pkEn:"May–October"},
+    {cn:"勿忘我", en:"FORGET-ME-NOT",sym:"f-forget",    m:[11,12,1,2,3,4,5],           peak:"11 月至次年 5 月",         pkEn:"November to May"},
+    {cn:"马蹄莲", en:"CALLA LILY",  sym:"f-calla",      m:[11,12,1,2,3,4],             peak:"11 月至次年 4 月",         pkEn:"November to April"},
+    {cn:"郁金香", en:"TULIP",       sym:"f-tulip",      m:[1,2,3,4],                   peak:"1–4 月，春季限定",        pkEn:"January–April, spring only"},
+    {cn:"蝴蝶兰", en:"ORCHID",      sym:"f-orchid",     m:[10,11,12,1,2,3],            peak:"10 月至次年 3 月",         pkEn:"October to March"}
   ];
 
   var cal = document.getElementById("cal");
   var grid = document.getElementById("bloomGrid");
   var meta = document.getElementById("calMeta");
   var MON = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+  var MON_EN = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   var cur = 0; /* 0 = 全部 */
+  var LANG = "zh"; /* 由语言模块写入 */
 
   /* 构建卡片 */
   var frag = document.createDocumentFragment();
-  DATA.forEach(function(d){
+  DATA.forEach(function(d, idx){
     var card = document.createElement("article");
     card.className = "bloom reveal";
     card.dataset.months = d.m.join(",");
+    card.dataset.i = String(idx);
     var cells = "";
     for (var i = 1; i <= 12; i++) {
       cells += "<s class='" + (d.m.indexOf(i) > -1 ? "on" : "") + "'></s>";
@@ -1155,11 +1177,40 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
     for (var j = 0; j < btns.length; j++) {
       btns[j].classList.toggle("on", Number(btns[j].dataset.m) === m);
     }
+    var mon = LANG === "en" ? MON_EN[m-1] : MON[m-1];
     meta.innerHTML = (m === 0)
-      ? "共 <b>" + cards.length + "</b> 个常见品种，全年大部分时间都能遇到。"
-      : MON[m-1] + " 可遇到 <b>" + n + "</b> 个品种";
+      ? (LANG === "en"
+          ? "<b>" + cards.length + "</b> common varieties, most of them available year-round."
+          : "共 <b>" + cards.length + "</b> 个常见品种，全年大部分时间都能遇到。")
+      : (LANG === "en"
+          ? "<b>" + n + "</b> varieties in " + mon
+          : mon + " 可遇到 <b>" + n + "</b> 个品种");
   }
   pick(0);
+
+  /* 供语言模块调用：刷新花历的动态文本 */
+  function refreshBlooms(){
+    for (var i = 0; i < cards.length; i++) {
+      var d = DATA[Number(cards[i].dataset.i)];
+      var cnEl = cards[i].querySelector(".b-cn");
+      var pkEl = cards[i].querySelector(".b-peak");
+      var svg = cards[i].querySelector("svg");
+      if (LANG === "en") {
+        cnEl.textContent = d.en.charAt(0) + d.en.slice(1).toLowerCase();
+        pkEl.textContent = d.pkEn;
+        if (svg) svg.setAttribute("aria-label", d.en.charAt(0) + d.en.slice(1).toLowerCase());
+      } else {
+        cnEl.textContent = d.cn;
+        pkEl.textContent = d.peak;
+        if (svg) svg.setAttribute("aria-label", d.cn);
+      }
+    }
+    for (var b = 0; b < btns.length; b++) {
+      var mv = Number(btns[b].dataset.m);
+      btns[b].textContent = (mv === 0) ? (LANG === "en" ? "All year" : "全年") : (LANG === "en" ? MON_EN[mv-1] : MON[mv-1]);
+    }
+    pick(cur);
+  }
 
   /* 入场动效：必须在动态卡片插入 DOM 之后执行，否则观察不到 */
   var items = document.querySelectorAll(".reveal");
@@ -1202,8 +1253,10 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
     PL.appendChild(pfrag);
   }
 
-  /* 旅程虚线路径动画 */
-  if (!reduce) {
+  /* 旅程虚线路径动画
+     必须做 IntersectionObserver 能力检测：不支持时若照旧把 dashoffset 设为 len，
+     路径会永久隐藏；而且异常会中断整个脚本，导致后面的语言切换失效。 */
+  if (!reduce && "IntersectionObserver" in window) {
     var dash = document.getElementById("roadDash");
     if (dash) {
       var len = dash.getTotalLength ? dash.getTotalLength() : 1200;
@@ -1219,6 +1272,177 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
       io2.observe(dash);
     }
   }
+
+  /* ================= 中英切换 =================
+     静态文本用选择器定位，英文写在 v 数组里（按 DOM 顺序），
+     中文原文在首次运行时缓存，切回时直接还原 —— 因此 HTML 无需改动。 */
+  var I18N = [
+    {s:".mark b", v:["Dounan"]},
+    {s:".nav-links a", v:["What is Dounan","The Journey","Flower Calendar","How to Visit","A Day"]},
+    {s:".hero-eyebrow", v:["Yunnan · Kunming · Chenggong <span>/ 24°N, 102°E</span>"]},
+    {s:".hero-title", v:["Dounan"]},
+    {s:".hero-sub", v:["Asia's Flower Capital"]},
+    {s:".hero-lead", v:["The rose you picked up at the florist was, quite possibly, still standing in a field in central Yunnan three days earlier. Between that field and your hand sit <b>a thousand kilometres</b>, <b>four or five stages of handling</b>, and one sleepless night. This is where the chain starts — and one of the country's largest fresh-cut flower hubs."]},
+    {s:".hero-facts .fact", v:["<i></i>Main hall <b>9:00–18:00</b>","<i></i>Night session <b>20:00–22:00</b>","<i></i>Entry <b>Free</b>"]},
+
+    {s:".sec-title", v:["Why Dounan","A Flower's Journey","Flower Calendar","How to Visit","A Day in Dounan"]},
+    {s:".sec-lead", v:[
+      "How does an inland village become the country's clearing house for flowers? Half the answer is climate; the other half is an industry built up over thirty-odd years.",
+      "From a field in central Yunnan to the vase in your living room, a flower passes five gates. At every one of them, it is racing against time.",
+      "Flowers here never really stop, but the star of the month keeps changing. Pick a month to see what the market is full of.",
+      "When it opens, how the market is laid out, which train to take, and the best hours to go — read this section before you set off.",
+      "The same place at different hours is almost two different worlds. Pick the hour that suits you."
+    ]},
+
+    {s:".why-text p", v:[
+      "Kunming sits on the Yunnan–Guizhou plateau at roughly 1,900 metres. Strong ultraviolet light, a wide swing between day and night temperatures, winters that never bite and summers that never bake — few places offer all three at once, and cut flowers happen to want exactly that. The temperature swing gives sturdy stems and deeper colour; cool nights slow the buds down, so a cut stem lasts days longer.",
+      "Climate is only the entry ticket. What makes Dounan Dounan is <strong>a complete ability to move flowers out</strong>: fields of growers all around it, workshops for pre-cooling, grading and packing, cold-chain trunk routes that leave at night and arrive the next morning, and a distribution network reaching the whole country. Flowers are gathered here, graded, priced, loaded — and then scattered in every direction.",
+      "For a visitor, the interesting thing is this: <strong>it is not a sight built for tourists</strong>. It is a wholesale market first, and a place you can stroll through second. Every bunch you see is stock genuinely in circulation, the prices are real wholesale prices, and the scene is simply an ordinary day at work."
+    ]},
+    {s:".stat-n", v:["Asia's <em>largest</em>","7 of every <em>10</em>","1000<em>+</em>","24<em>h</em>"]},
+    {s:".stat-l", v:[
+      "One of the largest fresh-cut flower trading hubs<span class='tag-warn'>Unverified</span>",
+      "Share of China's cut flowers grown in Yunnan<span class='tag-warn'>Unverified</span>",
+      "Varieties traded in the market<span class='tag-warn'>Unverified</span>",
+      "The market barely stops, day or night"
+    ]},
+
+    {s:".j-name", v:["The Field","Pre-cooling","Grading","Cold Chain","Your Vase"]},
+    {s:".j-text", v:[
+      "Greenhouses stretch across the basin in central Yunnan. Flowers are cut at dawn or dusk, buds still firm — at this point nobody knows where they will end up.",
+      "The first thing that happens after cutting is a cold room, to take the field heat out. This step decides how long the flower lasts — the moment it is cut, the race to keep it fresh begins.",
+      "Stems are graded by length, by the size of the head, by how far the bud has opened, then bundled twenty to a bunch. Same variety, different grade, noticeably different price.",
+      "Into a temperature-controlled truck, leaving overnight. By the next morning the same flowers are on sale in a city market a thousand kilometres away.",
+      "Through a florist's hands, and finally into the vase at home. From the moment the stem was cut, it is usually no more than seventy-two hours."
+    ]},
+
+    {s:".sub-h", v:["Opening hours","Market zones","Getting there","Best time to go"]},
+    {s:".o-name", v:["Flower World Main Hall","Night session","Entry"]},
+    {s:".o-time", v:["9:00–18:00","20:00–22:00","Free"]},
+    {s:".o-note", v:["The main area for visitors","The flower market under lights — a different mood","No booking needed for public areas"]},
+    {s:".shut", v:["<b>Closed</b> <p><strong>19:00–20:00 the market is shut — you cannot get in.</strong> This hour is for cleaning and resetting the floor for the night session. Come after 20:00 if you want an evening visit; don't make the trip for nothing.</p>"]},
+
+    {s:".z-name", v:["Flower World Main Hall","The Flower Streets"]},
+    {s:".z-desc", v:[
+      "The building visitors go to most. Cut flowers, dried flowers and potted plants on separate floors; buy by the stem or by the bunch, and wrapping and shipping agents are all in this area.",
+      "A ring of shopfronts around the main hall — flower material, wrapping paper, vases and containers. Prices are friendlier, and you see more of the market's everyday side."
+    ]},
+    {s:".z-for", v:["Good for first-time visitors · anyone taking flowers home","Good for browsing slowly · vases and wrapping"]},
+
+    {s:".t-badge", v:["Metro"]},
+    {s:".t-line b", v:["Line 4 · Jingui Street"]},
+    {s:".t-desc", v:["Kunming Metro <em>Line 4, Jingui Street station</em> is the closest station to the market — it is a walk from the exit<span class='tag-warn'>Walking time unverified</span>"]},
+    {s:".t-alt", v:["Line 1, Dounan station also works, but it is further away and means a longer walk."]},
+
+    {s:".slot-when", v:["Morning 9:00–12:00","Afternoon 14:00–17:00","19:00–20:00","Night session 20:00–22:00"]},
+    {s:".slot-what", v:[
+      "Just after opening: freshest flowers, widest choice, and the crowds have not arrived yet",
+      "Quieter hours — good for a slow look, and for photographs",
+      "Closed for cleaning and resetting; not open to visitors during this hour",
+      "The lights come on and the trading floor turns into somewhere to stroll"
+    ]},
+    {s:".tip span", v:[
+      "Come soon after opening if you want the freshest and widest choice; by afternoon some varieties are gone.",
+      "If you come in the evening, avoid 19:00–20:00 — the market is closed for that hour and the night session opens at 20:00.",
+      "Buying by the bunch is far better value than by the stem; if you are unsure, just ask how many stems are in a bunch.",
+      "To take flowers on a plane or ship them home, there are packing and courier agents right by the main hall — just ask a shop.",
+      "Ask before photographing inside the halls, so you don't get in the way of people working.",
+      "Kunming is around 1,900 metres up and the sun is strong — bring a hat or sunscreen for a daytime visit.",
+      "The temperature drops sharply after dark; bring a light jacket for early morning or evening.",
+      "Prices move with the season and with holidays — expect a jump around Valentine's Day and Mother's Day."
+    ]},
+    {s:".tag-warn", v:["Unverified","Unverified","Unverified","Walking time unverified"]},
+
+    {s:".tl-time small", v:["Late night · the fields","Morning · main hall","Night session · flower streets"]},
+    {s:".tl-place", v:["Flowers on the move","The best hours to visit","The other side, under lights"]},
+    {s:".tl-text", v:[
+      "While most of the city is asleep, harvesting and pre-cooling in the growing districts are wrapping up, and truck after truck heads for the market. The tidy sea of flowers you see by day is being loaded, bunch by bunch, right now.",
+      "An hour or two after opening: the flowers have just been put out, the water is fresh, and the range is at its widest. Roses, lilies and lisianthus stand bucket after bucket, in colours that look almost unreal. The light is best for photographs now, too.",
+      "After an hour of cleaning and resetting, the night session opens. Strings of lights come on and the daytime trading floor turns into somewhere to walk. Ten yuan buys an armful of gypsophila; someone walks out with flowers in their arms, smelling of them all the way home."
+    ]},
+
+    {s:"#blooms p[style]", v:["Months shown are approximate availability from Yunnan growers and shift with weather and variety — treat them as a rough guide only."]},
+    {s:".f-decl", v:["This is an <b>unofficial, non-profit</b> public information page. It carries no advertising, no shop recommendations and no buying service. All flower and scene graphics on this site are original SVG illustrations with no third-party material. Opening hours, transport and flowering times are compiled from public sources and have not all been verified on the ground — please check the market's latest notices before you travel."]},
+    {s:".f-links a", v:["What is Dounan","The Journey","Flower Calendar","How to Visit","A Day","Back to top"]},
+    {s:".f-bottom > span", v:[
+      "Found something wrong? Write to us <span class=\"f-mail\">imuse@163.com</span>",
+      null,
+      "Dounan · Asia's Flower Capital · Chenggong, Kunming, Yunnan"
+    ]},
+    {s:".f-mark b", v:["Dounan"]},
+
+    /* aria 与属性 */
+    {s:".mark", a:["Dounan, back to top"]},
+    {s:".nav-toggle", a:["Open navigation menu"]},
+    {s:".totop", a:["Back to top"]},
+    {s:"#cal", a:["Filter flowers by month"]},
+    {s:".dots", a:[
+      "Rating 5 out of 5","Rating 3 out of 5","Not open","Rating 4 out of 5"
+    ]}
+  ];
+
+  var META_EN = {
+    title: "Dounan · Asia's Flower Capital",
+    desc: "A non-commercial guide to Kunming's Dounan Flower Market: how a flower travels from a Yunnan field to your vase, a month-by-month flower calendar, opening hours and visiting tips.",
+    ogd: "From a field in Yunnan to the vase in your home — a thousand kilometres and one sleepless night in between."
+  };
+
+  var docEl = document.documentElement;
+  var langBtn = document.getElementById("langBtn");
+  var titleEl = document.querySelector("title");
+  var descEl = document.querySelector('meta[name="description"]');
+  var ogdEl = document.querySelector('meta[property="og:description"]');
+  var ogtEl = document.querySelector('meta[property="og:title"]');
+  var zhTitle = titleEl.textContent;
+  var zhDesc = descEl.getAttribute("content");
+  var zhOgd = ogdEl.getAttribute("content");
+
+  /* 缓存中文原文 */
+  I18N.forEach(function(it){
+    var els = document.querySelectorAll(it.s);
+    it._zh = []; it._zhA = [];
+    for (var i = 0; i < els.length; i++) {
+      it._zh[i] = els[i].innerHTML;
+      if (it.a) it._zhA[i] = els[i].getAttribute("aria-label");
+    }
+  });
+
+  function setLang(lang){
+    LANG = lang;
+    docEl.lang = (lang === "en") ? "en" : "zh-CN";
+    docEl.setAttribute("data-lang", lang);
+    I18N.forEach(function(it){
+      var els = document.querySelectorAll(it.s);
+      for (var i = 0; i < els.length; i++) {
+        if (it.v && it.v[i] != null) els[i].innerHTML = (lang === "en") ? it.v[i] : it._zh[i];
+        if (it.a && it.a[i] != null) els[i].setAttribute("aria-label", (lang === "en") ? it.a[i] : it._zhA[i]);
+      }
+    });
+    if (lang === "en") {
+      titleEl.textContent = META_EN.title;
+      descEl.setAttribute("content", META_EN.desc);
+      ogdEl.setAttribute("content", META_EN.ogd);
+      if (ogtEl) ogtEl.setAttribute("content", META_EN.title);
+    } else {
+      titleEl.textContent = zhTitle;
+      descEl.setAttribute("content", zhDesc);
+      ogdEl.setAttribute("content", zhOgd);
+      if (ogtEl) ogtEl.setAttribute("content", zhTitle);
+    }
+    refreshBlooms();
+    langBtn.textContent = (lang === "en") ? "中" : "EN";
+    langBtn.setAttribute("aria-label", (lang === "en") ? "Switch to Chinese" : "Switch language");
+    try { localStorage.setItem("dn-lang", lang); } catch (e) {}
+  }
+
+  langBtn.addEventListener("click", function(){
+    setLang(LANG === "en" ? "zh" : "en");
+  });
+
+  var saved = null;
+  try { saved = localStorage.getItem("dn-lang"); } catch (e) {}
+  if (saved === "en") setLang("en");
+  else docEl.setAttribute("data-lang", "zh");
 })();
 </script>
 </body>
