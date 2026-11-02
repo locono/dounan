@@ -17,8 +17,6 @@
   --ink:#2E2A26;
   --ink-2:#5E574F;
   --ink-3:#8B8278;
-  --leaf:#00A86B;
-  --leaf-dk:#007A4C;
   --rose:#FF3D6E;
   --rose-dk:#D81B52;
   --gold:#F0A500;
@@ -66,7 +64,7 @@ p{margin:0}
 .nav-links a:hover::after,.nav-links a.on::after{right:0}
 .nav-links a.on{color:var(--rose-dk)}
 .progress{position:absolute;left:0;bottom:-1px;height:2px;width:0;
-  background:linear-gradient(90deg,var(--leaf),var(--gold),var(--rose));}
+  background:linear-gradient(90deg,var(--rose),var(--gold),var(--violet));}
 .nav-toggle{display:none;margin-left:auto;background:none;border:0;padding:8px;cursor:pointer}
 .nav-toggle svg{width:22px;height:22px;stroke:var(--ink);fill:none;stroke-width:1.8}
 .lang{
@@ -95,7 +93,7 @@ html[data-lang="en"] .f-decl{line-height:1.76;letter-spacing:0}
     radial-gradient(60% 55% at 12% 76%,rgba(255,61,110,.13) 0%,rgba(255,61,110,0) 60%),
     linear-gradient(180deg,#FFFDF8 0%,#FFF8EE 100%);
 }
-.hero-in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.82fr);gap:clamp(24px,5vw,64px);align-items:center}
+.hero-in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.06fr);gap:clamp(24px,5vw,64px);align-items:center}
 .hero-eyebrow{
   font-size:12.5px;letter-spacing:.42em;color:var(--gold-dk);
   text-transform:uppercase;margin-bottom:clamp(14px,2.4vw,24px);
@@ -115,35 +113,37 @@ h1.hero-title{
 }
 .hero-lead b,.why-text strong{color:var(--ink);font-weight:600}
 .hero-facts{display:flex;flex-wrap:wrap;gap:10px}
+.hero-facts .brk{flex-basis:100%;height:0}
 .fact{
   display:inline-flex;align-items:baseline;gap:8px;
   border:1.5px solid var(--line);border-radius:999px;
   padding:7px 16px;background:rgba(255,255,255,.72);font-size:13.5px;color:var(--ink-2);
 }
 .fact b{font-family:var(--serif);font-size:15px;color:var(--ink);letter-spacing:.04em}
-.fact i{font-style:normal;width:7px;height:7px;border-radius:50%;background:var(--leaf);align-self:center}
-.fact:nth-child(2) i{background:var(--gold)}
-.fact:nth-child(3) i{background:var(--rose)}
+.fact i{font-style:normal;width:7px;height:7px;border-radius:50%;background:var(--rose);align-self:center}
+.fact:nth-of-type(2) i{background:var(--gold)}
+.fact:nth-of-type(3) i{background:var(--violet)}
 
-/* 花装置 */
-.device{position:relative;aspect-ratio:1/1;width:100%;max-width:480px;margin:0 auto;display:grid;place-items:center}
-.device-ring{
-  position:absolute;inset:6%;border:1.5px dashed rgba(46,42,38,.16);border-radius:50%;
+/* Hero 实景照片轮播 */
+.device{position:relative;width:100%;max-width:540px;margin:0 auto;aspect-ratio:1/1;border-radius:26px;overflow:hidden;
+  box-shadow:0 20px 48px rgba(46,42,38,.16)}
+.device img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+  opacity:0;transition:opacity 1.1s ease}
+.device img.on{opacity:1}
+.device::after{content:"";position:absolute;inset:0;border-radius:26px;box-shadow:inset 0 0 0 1px rgba(46,42,38,.1);pointer-events:none}
+.device-tag{
+  position:absolute;left:14px;bottom:14px;z-index:2;
+  background:rgba(255,253,248,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border-radius:999px;padding:8px 16px;
+  font-family:var(--serif);font-size:12.5px;letter-spacing:.16em;color:var(--ink);
 }
-.device-rays{position:absolute;inset:0;animation:spin 78s linear infinite}
-.device-core{
-  position:relative;width:33%;aspect-ratio:1/1;border-radius:50%;
-  background:radial-gradient(circle at 38% 32%,#FFE9A8,#FFC633 62%,#F0A800 100%);
-  display:grid;place-items:center;
-  box-shadow:0 8px 26px rgba(240,165,0,.24);
-  animation:breathe 7s ease-in-out infinite;
+.device-dots{position:absolute;right:16px;bottom:18px;z-index:2;display:flex;gap:8px}
+.device-dots button{
+  width:9px;height:9px;border-radius:50%;border:0;padding:0;cursor:pointer;
+  background:rgba(255,253,248,.5);box-shadow:0 1px 3px rgba(46,42,38,.2);
+  transition:transform .2s ease,background .2s ease;
 }
-.device-core span{
-  font-family:var(--serif);font-size:clamp(11px,1.2vw,15px);letter-spacing:.14em;
-  color:#8A5A00;font-weight:600;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+.device-dots button.on{background:#FFFDF8;transform:scale(1.25)}
 
 /* 底部花带 */
 .hero-band{position:relative;z-index:1;display:flex;height:9px;margin-top:clamp(34px,5vw,56px);border-radius:999px;overflow:hidden}
@@ -175,30 +175,31 @@ section{padding:clamp(36px,6vw,68px) 0;scroll-margin-top:62px}
 .stat-n{font-family:var(--serif);font-size:clamp(1.9rem,4vw,2.7rem);line-height:1;color:var(--ink);letter-spacing:.02em}
 .stat-n em{font-style:normal;color:var(--rose)}
 .stat-l{font-size:13px;color:var(--ink-2);margin-top:9px;line-height:1.6}
-.stat:nth-child(1) .stat-n{color:var(--leaf-dk)}
+.stat:nth-child(1) .stat-n{color:var(--violet)}
 .stat:nth-child(2) .stat-n{color:var(--rose-dk)}
 .stat:nth-child(3) .stat-n{color:var(--gold-dk)}
-.stat:nth-child(4) .stat-n{color:var(--violet)}
+.stat:nth-child(4) .stat-n{color:var(--sky)}
 .tag-warn{
   display:inline-block;font-size:11px;letter-spacing:.06em;color:#8A5A0B;
   background:#FFE9B8;border:1px solid #F0CE86;border-radius:4px;padding:1px 6px;
   margin-left:6px;vertical-align:2px;white-space:nowrap;
 }
 
-/* ---------- 02 旅程（实色块） ---------- */
+/* ---------- 02 旅程（米白分区） ---------- */
 .journey{
-  background:linear-gradient(155deg,#00A86B 0%,#0B8F5E 52%,#007A4C 100%);
-  color:#fff;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#FFF8EE 0%,#FFF4E3 100%);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  color:var(--ink);position:relative;overflow:hidden;
 }
 .journey::before{
-  content:"";position:absolute;inset:0;opacity:.5;
+  content:"";position:absolute;inset:0;opacity:.8;
   background:
-    radial-gradient(46% 60% at 88% 8%,rgba(255,220,120,.42) 0%,rgba(255,220,120,0) 60%),
-    radial-gradient(38% 50% at 6% 96%,rgba(255,255,255,.2) 0%,rgba(255,255,255,0) 60%);
+    radial-gradient(44% 58% at 88% 4%,rgba(255,61,110,.07) 0%,rgba(255,61,110,0) 62%),
+    radial-gradient(40% 54% at 4% 96%,rgba(240,165,0,.1) 0%,rgba(240,165,0,0) 62%);
 }
-.journey .sec-num{color:rgba(255,255,255,.24)}
-.journey .sec-title{color:#fff}
-.journey .sec-lead{color:rgba(255,255,255,.86)}
+.journey .sec-num{color:rgba(46,42,38,.12)}
+.journey .sec-title{color:var(--ink)}
+.journey .sec-lead{color:var(--ink-2)}
 .journey-in{position:relative;z-index:1}
 .j-road{position:relative;margin-top:clamp(24px,3.5vw,40px)}
 .j-road svg{display:block;width:100%;height:auto}
@@ -207,17 +208,18 @@ section{padding:clamp(36px,6vw,68px) 0;scroll-margin-top:62px}
 .j-pin{
   width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
   background:#fff;margin-bottom:14px;position:relative;
+  border:1px solid var(--line);box-shadow:0 3px 10px rgba(46,42,38,.07);
 }
-.j-pin::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1.5px solid rgba(255,255,255,.42)}
+.j-pin::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1.5px solid rgba(46,42,38,.1)}
 .j-pin svg{width:20px;height:20px;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .j-step:nth-child(1) .j-pin svg{stroke:#FF3D6E}
 .j-step:nth-child(2) .j-pin svg{stroke:#2E9BD6}
 .j-step:nth-child(3) .j-pin svg{stroke:#F0A500}
 .j-step:nth-child(4) .j-pin svg{stroke:#8A5FE0}
-.j-step:nth-child(5) .j-pin svg{stroke:#007A4C}
-.j-n{font-family:var(--serif);font-size:12.5px;letter-spacing:.18em;color:rgba(255,255,255,.66);display:block;margin-bottom:4px}
-.j-name{font-family:var(--serif);font-size:clamp(1rem,1.6vw,1.2rem);letter-spacing:.06em;color:#fff;margin-bottom:8px}
-.j-text{font-size:13.5px;color:rgba(255,255,255,.84);line-height:1.8}
+.j-step:nth-child(5) .j-pin svg{stroke:#D81B52}
+.j-n{font-family:var(--serif);font-size:12.5px;letter-spacing:.18em;color:var(--ink-3);display:block;margin-bottom:4px}
+.j-name{font-family:var(--serif);font-size:clamp(1rem,1.6vw,1.2rem);letter-spacing:.06em;color:var(--ink);margin-bottom:8px}
+.j-text{font-size:13.5px;color:var(--ink-2);line-height:1.8}
 
 /* ---------- 03 花历 ---------- */
 .cal{
@@ -237,8 +239,9 @@ section{padding:clamp(36px,6vw,68px) 0;scroll-margin-top:62px}
 .bloom{border:1.5px solid var(--line);border-radius:14px;background:#fff;overflow:hidden;transition:transform .2s ease,border-color .2s ease}
 .bloom:hover{transform:translateY(-3px);border-color:var(--rose)}
 .bloom.hide{display:none}
-.b-pic{aspect-ratio:1/1;display:grid;place-items:center;padding:16%;position:relative}
-.b-pic svg{width:100%;height:100%}
+.b-pic{aspect-ratio:1/1;overflow:hidden;background:#F6F1E7}
+.b-pic img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease}
+.bloom:hover .b-pic img{transform:scale(1.06)}
 .b-body{padding:12px 14px 14px;border-top:1.5px solid var(--line)}
 .b-cn{font-family:var(--serif);font-size:15.5px;letter-spacing:.08em;margin-bottom:2px}
 .b-en{font-size:11px;letter-spacing:.1em;color:var(--ink-3);margin-bottom:10px}
@@ -247,7 +250,7 @@ section{padding:clamp(36px,6vw,68px) 0;scroll-margin-top:62px}
 .bar s.on{background:var(--rose)}
 .bloom:nth-child(4n+2) .bar s.on{background:var(--gold)}
 .bloom:nth-child(4n+3) .bar s.on{background:var(--sky)}
-.bloom:nth-child(4n+4) .bar s.on{background:var(--leaf)}
+.bloom:nth-child(4n+4) .bar s.on{background:var(--violet)}
 .b-peak{font-size:11.5px;color:var(--ink-3);margin-top:8px}
 
 /* ---------- 04 怎么逛 ---------- */
@@ -258,7 +261,7 @@ section{padding:clamp(36px,6vw,68px) 0;scroll-margin-top:62px}
 }
 .opens{display:grid;gap:10px}
 .open{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
-  border:1.5px solid var(--line);border-left:4px solid var(--leaf);
+  border:1.5px solid var(--line);border-left:4px solid var(--rose);
   border-radius:10px;padding:13px 16px;background:#fff}
 .open:nth-child(2){border-left-color:var(--gold)}
 .open:nth-child(3){border-left-color:var(--violet)}
@@ -279,7 +282,7 @@ section{padding:clamp(36px,6vw,68px) 0;scroll-margin-top:62px}
 
 .zones{display:grid;gap:12px}
 .zone{border:1.5px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
-.zone:nth-child(1){border-top:3px solid var(--leaf)}
+.zone:nth-child(1){border-top:3px solid var(--violet)}
 .zone:nth-child(2){border-top:3px solid var(--rose)}
 .z-name{font-family:var(--serif);font-size:1.05rem;letter-spacing:.08em;margin-bottom:6px}
 .z-desc{font-size:13.5px;color:var(--ink-2);line-height:1.8}
@@ -288,7 +291,7 @@ section{padding:clamp(36px,6vw,68px) 0;scroll-margin-top:62px}
 .transit{border:1.5px solid var(--line);border-radius:12px;padding:18px 20px;background:#fff}
 .t-line{display:flex;align-items:center;gap:10px;margin-bottom:9px}
 .t-badge{
-  font-size:12px;letter-spacing:.08em;color:#fff;background:var(--leaf);
+  font-size:12px;letter-spacing:.08em;color:#fff;background:var(--sky);
   border-radius:5px;padding:2px 9px;flex:none;
 }
 .t-line b{font-family:var(--serif);font-size:1.05rem;letter-spacing:.06em}
@@ -306,25 +309,25 @@ section{padding:clamp(36px,6vw,68px) 0;scroll-margin-top:62px}
 .dots{display:flex;gap:4px}
 .dots i{width:7px;height:7px;border-radius:50%;background:var(--gold)}
 .dots i.off{background:#E4DCCC}
-.slot.best{background:linear-gradient(90deg,rgba(0,168,107,.08),rgba(0,168,107,0));border-radius:8px;padding-left:12px}
-.slot.best .slot-when{color:var(--leaf-dk)}
+.slot.best{background:linear-gradient(90deg,rgba(255,61,110,.09),rgba(255,61,110,0));border-radius:8px;padding-left:12px}
+.slot.best .slot-when{color:var(--rose-dk)}
 .slot.closed{opacity:.72}
 .slot.closed .slot-when{color:var(--ink-3);text-decoration:line-through}
 
 .tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:12px;margin-top:clamp(24px,3.4vw,36px)}
-.tip{display:flex;gap:11px;border:1.5px solid var(--line);border-left:3px solid var(--leaf);
+.tip{display:flex;gap:11px;border:1.5px solid var(--line);border-left:3px solid var(--rose);
   border-radius:10px;padding:13px 15px;background:#fff}
 .tip:nth-child(6n+2){border-left-color:var(--gold)}
 .tip:nth-child(6n+3){border-left-color:var(--sky)}
 .tip:nth-child(6n+4){border-left-color:var(--violet)}
-.tip:nth-child(6n+5){border-left-color:var(--rose)}
-.tip:nth-child(6n+6){border-left-color:var(--leaf-dk)}
-.tip svg{width:19px;height:19px;flex:none;margin-top:3px;stroke:var(--leaf);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tip:nth-child(6n+5){border-left-color:var(--rose-dk)}
+.tip:nth-child(6n+6){border-left-color:var(--gold-dk)}
+.tip svg{width:19px;height:19px;flex:none;margin-top:3px;stroke:var(--rose);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .tip:nth-child(6n+2) svg{stroke:var(--gold-dk)}
 .tip:nth-child(6n+3) svg{stroke:var(--sky)}
 .tip:nth-child(6n+4) svg{stroke:var(--violet)}
-.tip:nth-child(6n+5) svg{stroke:var(--rose)}
-.tip:nth-child(6n+6) svg{stroke:var(--leaf-dk)}
+.tip:nth-child(6n+5) svg{stroke:var(--rose-dk)}
+.tip:nth-child(6n+6) svg{stroke:var(--gold-dk)}
 .tip span{font-size:13.5px;color:var(--ink-2);line-height:1.75}
 
 /* ---------- 05 一天 ---------- */
@@ -332,7 +335,7 @@ section{padding:clamp(36px,6vw,68px) 0;scroll-margin-top:62px}
 .tl-item{display:block;min-width:0}
 .tl-item::before{
   content:"";display:block;height:3px;width:46px;border-radius:2px;
-  background:var(--leaf);margin-bottom:12px;
+  background:var(--rose);margin-bottom:12px;
 }
 .tl-item:nth-child(2)::before{background:var(--gold)}
 .tl-item:nth-child(3)::before{background:var(--violet)}
@@ -342,8 +345,9 @@ section{padding:clamp(36px,6vw,68px) 0;scroll-margin-top:62px}
   background:#fff;border:1.5px solid var(--line);border-radius:14px;
   padding:clamp(14px,1.6vw,18px);
 }
-.tl-pic{aspect-ratio:16/9;border-radius:9px;overflow:hidden;margin:0 0 14px;background:#FFF6E6}
-.tl-pic svg,.petal svg{width:100%;height:100%;display:block}
+.tl-pic{aspect-ratio:16/9;border-radius:9px;overflow:hidden;margin:0 0 14px;background:#F6F1E7}
+.tl-pic img{width:100%;height:100%;object-fit:cover;display:block}
+.petal svg{width:100%;height:100%;display:block}
 .tl-place{font-family:var(--serif);font-size:1.15rem;letter-spacing:.08em;margin-bottom:8px}
 .tl-text{font-size:14px;color:var(--ink-2);line-height:1.95}
 
@@ -360,7 +364,7 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
 .f-links a:hover{color:var(--rose-dk);border-color:var(--rose)}
 .f-bottom{border-top:1px solid var(--line);padding-top:16px;display:flex;flex-wrap:wrap;gap:12px 24px;
   justify-content:space-between;align-items:center;font-size:13px;color:var(--ink-3)}
-.f-mail{font-weight:600;color:var(--leaf-dk);user-select:all;-webkit-user-select:all;white-space:nowrap;letter-spacing:.03em}
+.f-mail{font-weight:600;color:var(--rose-dk);user-select:all;-webkit-user-select:all;white-space:nowrap;letter-spacing:.03em}
 .f-site{font-weight:600;color:var(--ink);letter-spacing:.09em;user-select:all;-webkit-user-select:all;white-space:nowrap}
 
 /* ---------- 飘花 ---------- */
@@ -382,9 +386,9 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
 .totop{
   position:fixed;right:clamp(14px,2.4vw,26px);bottom:clamp(14px,2.4vw,26px);z-index:70;
   width:48px;height:48px;border-radius:50%;border:0;cursor:pointer;
-  background:linear-gradient(140deg,#00A86B,#007A4C);color:#fff;
+  background:linear-gradient(140deg,#DF2159,#A3123F);color:#fff;
   display:grid;place-items:center;
-  box-shadow:0 6px 20px rgba(0,122,76,.32);
+  box-shadow:0 6px 20px rgba(216,27,82,.32);
   opacity:0;visibility:hidden;transform:translateY(10px);
   transition:opacity .26s ease,transform .26s ease,visibility .26s;
 }
@@ -398,7 +402,7 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
 
 /* ---------- 响应式 ---------- */
 @media (max-width:960px){
-  .hero-in{grid-template-columns:1fr;gap:clamp(20px,4vw,34px)}
+  .hero-in{grid-template-columns:minmax(0,1fr);gap:clamp(20px,4vw,34px)}
   .device{max-width:330px;order:-1}
   .why{grid-template-columns:1fr}
   .j-steps{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:22px}
@@ -431,7 +435,6 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .reveal{opacity:1;transform:none}
-  .device-rays,.device-core{animation:none}
   .petal{animation:none;display:none}
   *{transition-duration:.01ms !important}
 }
@@ -458,190 +461,6 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
   </g>
 </defs>
 
-  <!-- 12 品种 -->
-  <symbol id="f-rose" viewBox="0 0 100 100">
-    <path d="M50 88V66" stroke="#00A86B" stroke-width="4" fill="none"/>
-    <path d="M50 76c-11 0-17-7-17-15 8-1 14 3 17 15z" fill="#00A86B"/>
-    <circle cx="50" cy="42" r="30" fill="#FF8FAB"/>
-    <circle cx="50" cy="42" r="22" fill="#FF6B91"/>
-    <path d="M50 20c11 6 11 20 0 26-11-6-11-20 0-26z" fill="#FF3D6E"/>
-    <path d="M38 30c9 2 12 9 12 18M62 30c-9 2-12 9-12 18" stroke="#FFE0E8" stroke-width="2.4" fill="none"/>
-    <path d="M44 46c3 4 9 4 12 0" stroke="#FFE0E8" stroke-width="2.4" fill="none"/>
-  </symbol>
-  <symbol id="f-lily" viewBox="0 0 100 100">
-    <path d="M50 90V56" stroke="#00A86B" stroke-width="4" fill="none"/>
-    <g fill="#FFFFFF">
-      <path d="M50 54c-4-16-2-30 0-38 2 8 4 22 0 38z"/>
-      <path d="M50 54c-13-10-22-21-26-28 10 4 22 14 26 28z"/>
-      <path d="M50 54c13-10 22-21 26-28-10 4-22 14-26 28z"/>
-      <path d="M50 52c-8-6-11-16-11-24 6 8 10 17 11 24z" fill="#FFE1EC"/>
-      <path d="M50 52c8-6 11-16 11-24-6 8-10 17-11 24z" fill="#FFE1EC"/>
-      <path d="M50 52c-3-9-3-19-2-27 3 8 3 18 2 27z" fill="#FFC7DB"/>
-    </g>
-    <g stroke="#F0A500" stroke-width="2.6" fill="none">
-      <path d="M50 54l-4-18M50 54l3-19M50 54l7-16"/>
-    </g>
-    <g fill="#F0A500"><circle cx="45" cy="34" r="3"/><circle cx="53" cy="33" r="3"/><circle cx="58" cy="38" r="3"/></g>
-  </symbol>
-  <symbol id="f-carnation" viewBox="0 0 100 100">
-    <path d="M50 92V56" stroke="#00A86B" stroke-width="4" fill="none"/>
-    <path d="M50 70c-10-2-15-9-15-16 8 0 13 5 15 16z" fill="#00A86B"/>
-    <path d="M50 24c14 0 24 10 24 22 0 16-11 26-24 26S26 62 26 46c0-12 10-22 24-22z" fill="#FF9EBB"/>
-    <path d="M50 30c10 0 17 7 17 15 0 12-8 20-17 20-3-10-3-25 0-35z" fill="#FF6B91"/>
-    <path d="M33 46c5-4 9-3 12 2M55 48c4-5 8-6 13-2M40 62c5-2 9-1 12 3" stroke="#FFE0E8" stroke-width="2.2" fill="none"/>
-    <path d="M26 46c-6-4-8-11-6-16 5 2 8 9 6 16z" fill="#8FD9A8"/>
-    <path d="M74 46c6-4 8-11 6-16-5 2-8 9-6 16z" fill="#8FD9A8"/>
-  </symbol>
-  <symbol id="f-gerbera" viewBox="0 0 100 100">
-    <path d="M50 92V62" stroke="#00A86B" stroke-width="4" fill="none"/>
-    <g fill="#FFB524">
-      <ellipse cx="50" cy="20" rx="7" ry="13"/><ellipse cx="50" cy="20" rx="7" ry="13" transform="rotate(40 50 50)"/>
-      <ellipse cx="50" cy="20" rx="7" ry="13" transform="rotate(80 50 50)"/><ellipse cx="50" cy="20" rx="7" ry="13" transform="rotate(120 50 50)"/>
-      <ellipse cx="50" cy="20" rx="7" ry="13" transform="rotate(160 50 50)"/><ellipse cx="50" cy="20" rx="7" ry="13" transform="rotate(200 50 50)"/>
-      <ellipse cx="50" cy="20" rx="7" ry="13" transform="rotate(240 50 50)"/><ellipse cx="50" cy="20" rx="7" ry="13" transform="rotate(280 50 50)"/>
-      <ellipse cx="50" cy="20" rx="7" ry="13" transform="rotate(320 50 50)"/>
-    </g>
-    <circle cx="50" cy="50" r="15" fill="#F07A1E"/>
-    <circle cx="50" cy="50" r="8" fill="#FFD98A"/>
-  </symbol>
-  <symbol id="f-gypsophila" viewBox="0 0 100 100">
-    <path d="M50 92V52" stroke="#00A86B" stroke-width="3.4" fill="none"/>
-    <g stroke="#C9BCA6" stroke-width="1.6" fill="none">
-      <path d="M50 52L30 34M50 52L70 34M50 52L50 26M50 52L24 50M50 52L76 50M50 52L36 66M50 52L64 66"/>
-    </g>
-    <g fill="#FFFFFF" stroke="#E8DCC8" stroke-width="1.2">
-      <circle cx="30" cy="32" r="7"/><circle cx="70" cy="32" r="7"/><circle cx="50" cy="24" r="8"/>
-      <circle cx="22" cy="50" r="6.5"/><circle cx="78" cy="50" r="6.5"/><circle cx="34" cy="68" r="6"/><circle cx="66" cy="68" r="6"/>
-    </g>
-    <g fill="#FFD1E0">
-      <circle cx="38" cy="40" r="5"/><circle cx="62" cy="40" r="5"/><circle cx="50" cy="42" r="5.5"/>
-      <circle cx="34" cy="58" r="4.5"/><circle cx="66" cy="58" r="4.5"/>
-    </g>
-  </symbol>
-  <symbol id="f-forget" viewBox="0 0 100 100">
-    <path d="M50 92V56" stroke="#00A86B" stroke-width="3.4" fill="none"/>
-    <g stroke="#7FB8E8" stroke-width="1.8" fill="none"><path d="M50 56L36 40M50 56L64 40M50 56L50 32M50 56L30 54M50 56L70 54"/></g>
-    <g>
-      <g fill="#4E9BE0">
-        <circle cx="36" cy="38" r="5"/><circle cx="30" cy="38" r="5"/><circle cx="36" cy="32" r="5"/><circle cx="30" cy="32" r="5"/><circle cx="33" cy="35" r="3.4" fill="#FFE08A"/>
-      </g>
-      <g fill="#4E9BE0">
-        <circle cx="64" cy="38" r="5"/><circle cx="70" cy="38" r="5"/><circle cx="64" cy="32" r="5"/><circle cx="70" cy="32" r="5"/><circle cx="67" cy="35" r="3.4" fill="#FFE08A"/>
-      </g>
-      <g fill="#6FB3E8">
-        <circle cx="50" cy="28" r="5"/><circle cx="44" cy="30" r="5"/><circle cx="56" cy="30" r="5"/><circle cx="50" cy="35" r="3.4" fill="#FFE08A"/>
-      </g>
-      <g fill="#4E9BE0">
-        <circle cx="28" cy="54" r="4.6"/><circle cx="34" cy="58" r="4.6"/><circle cx="31" cy="55" r="3" fill="#FFE08A"/>
-      </g>
-      <g fill="#4E9BE0">
-        <circle cx="72" cy="54" r="4.6"/><circle cx="66" cy="58" r="4.6"/><circle cx="69" cy="55" r="3" fill="#FFE08A"/>
-      </g>
-    </g>
-  </symbol>
-  <symbol id="f-hydrangea" viewBox="0 0 100 100">
-    <path d="M50 92V64" stroke="#00A86B" stroke-width="4" fill="none"/>
-    <path d="M50 78c-10 0-16-6-16-13 8 0 13 4 16 13z" fill="#00A86B"/>
-    <g fill="#A8C8F0">
-      <circle cx="30" cy="34" r="12"/><circle cx="52" cy="26" r="12"/><circle cx="72" cy="36" r="12"/>
-      <circle cx="36" cy="54" r="12"/><circle cx="58" cy="50" r="12"/><circle cx="70" cy="60" r="10"/>
-      <circle cx="44" cy="70" r="10"/>
-    </g>
-    <g fill="#7FA8E0">
-      <circle cx="30" cy="34" r="5"/><circle cx="52" cy="26" r="5"/><circle cx="72" cy="36" r="5"/>
-      <circle cx="36" cy="54" r="5"/><circle cx="58" cy="50" r="5"/><circle cx="70" cy="60" r="4.4"/><circle cx="44" cy="70" r="4.4"/>
-    </g>
-    <g fill="#FFFFFF" opacity=".7">
-      <circle cx="26" cy="30" r="2.4"/><circle cx="48" cy="22" r="2.4"/><circle cx="68" cy="32" r="2.4"/>
-      <circle cx="32" cy="50" r="2.4"/><circle cx="54" cy="46" r="2.4"/>
-    </g>
-  </symbol>
-  <symbol id="f-sunflower" viewBox="0 0 100 100">
-    <path d="M50 92V62" stroke="#00A86B" stroke-width="4.4" fill="none"/>
-    <path d="M50 78c-11-1-16-8-16-15 8 0 14 5 16 15z" fill="#00A86B"/>
-    <g fill="#FFC42E">
-      <ellipse cx="50" cy="20" rx="8" ry="15"/><ellipse cx="50" cy="20" rx="8" ry="15" transform="rotate(36 50 50)"/>
-      <ellipse cx="50" cy="20" rx="8" ry="15" transform="rotate(72 50 50)"/><ellipse cx="50" cy="20" rx="8" ry="15" transform="rotate(108 50 50)"/>
-      <ellipse cx="50" cy="20" rx="8" ry="15" transform="rotate(144 50 50)"/><ellipse cx="50" cy="20" rx="8" ry="15" transform="rotate(180 50 50)"/>
-      <ellipse cx="50" cy="20" rx="8" ry="15" transform="rotate(216 50 50)"/><ellipse cx="50" cy="20" rx="8" ry="15" transform="rotate(252 50 50)"/>
-      <ellipse cx="50" cy="20" rx="8" ry="15" transform="rotate(288 50 50)"/><ellipse cx="50" cy="20" rx="8" ry="15" transform="rotate(324 50 50)"/>
-    </g>
-    <circle cx="50" cy="50" r="18" fill="#8B5A1E"/>
-    <circle cx="50" cy="50" r="13" fill="#5E3A10"/>
-    <g fill="#3F260A" opacity=".55">
-      <circle cx="44" cy="45" r="2"/><circle cx="55" cy="46" r="2"/><circle cx="50" cy="54" r="2"/><circle cx="46" cy="55" r="2"/><circle cx="56" cy="54" r="2"/>
-    </g>
-  </symbol>
-  <symbol id="f-tulip" viewBox="0 0 100 100">
-    <path d="M50 92V48" stroke="#00A86B" stroke-width="4" fill="none"/>
-    <path d="M50 74c-11-2-16-9-16-16 8 1 14 6 16 16z" fill="#00A86B"/>
-    <path d="M32 46c0-14 8-24 18-24s18 10 18 24c0 6-2 10-5 13-3-11-8-16-13-16s-10 5-13 16c-3-3-5-7-5-13z" fill="#FF7FA8"/>
-    <path d="M40 44c0-12 4-18 10-18 3 8 3 16 1 24-5-1-9-3-11-6z" fill="#FF4F85"/>
-    <path d="M60 44c0-12-4-18-10-18-3 8-3 16-1 24 5-1 9-3 11-6z" fill="#FFA8C4"/>
-    <path d="M50 22v26" stroke="#FFD6E4" stroke-width="2" fill="none"/>
-  </symbol>
-  <symbol id="f-calla" viewBox="0 0 100 100">
-    <path d="M50 92V44" stroke="#00A86B" stroke-width="4" fill="none"/>
-    <path d="M50 76c-10-2-15-8-15-14 8 0 13 5 15 14z" fill="#00A86B"/>
-    <path d="M50 20c12 6 20 18 20 30 0 10-8 16-20 16s-20-6-20-16c0-12 8-24 20-30z" fill="#FFFFFF" stroke="#E4DCCC" stroke-width="1.6"/>
-    <path d="M50 28c8 5 13 15 13 24 0 7-5 11-13 11-2-12-2-26 0-35z" fill="#FFF3F6"/>
-    <path d="M50 40c5 3 8 9 8 15 0 4-3 6-8 6v-21z" fill="#FFE08A"/>
-  </symbol>
-  <symbol id="f-lisianthus" viewBox="0 0 100 100">
-    <path d="M50 92V58" stroke="#00A86B" stroke-width="3.6" fill="none"/>
-    <path d="M50 76c-9-2-14-8-14-14 8 0 12 5 14 14z" fill="#00A86B"/>
-    <path d="M28 44c0-13 9-24 22-24s22 11 22 24c0 12-9 20-22 20s-22-8-22-20z" fill="#E8D4F5"/>
-    <path d="M36 44c0-10 6-18 14-18s14 8 14 18c0 9-6 15-14 15s-14-6-14-15z" fill="#C9A2EE"/>
-    <path d="M44 44c0-6 3-10 6-10s6 4 6 10c0 5-3 9-6 9s-6-4-6-9z" fill="#9B6EDC"/>
-    <path d="M50 34v18M42 40c4 4 12 4 16 0" stroke="#FFFFFF" stroke-width="2" fill="none" opacity=".8"/>
-  </symbol>
-  <symbol id="f-orchid" viewBox="0 0 100 100">
-    <path d="M50 92V66" stroke="#00A86B" stroke-width="3.6" fill="none"/>
-    <path d="M50 84c-9 0-14-6-14-12 7 0 12 4 14 12z" fill="#00A86B"/>
-    <g fill="#FFB8D4">
-      <ellipse cx="26" cy="38" rx="17" ry="11" transform="rotate(-18 26 38)"/>
-      <ellipse cx="74" cy="38" rx="17" ry="11" transform="rotate(18 74 38)"/>
-      <ellipse cx="50" cy="22" rx="11" ry="16"/>
-      <ellipse cx="36" cy="56" rx="13" ry="10"/>
-      <ellipse cx="64" cy="56" rx="13" ry="10"/>
-    </g>
-    <g fill="#FF7FB0">
-      <ellipse cx="50" cy="22" rx="6" ry="10"/>
-      <ellipse cx="36" cy="56" rx="7" ry="5.5"/>
-      <ellipse cx="64" cy="56" rx="7" ry="5.5"/>
-    </g>
-    <ellipse cx="50" cy="50" rx="10" ry="13" fill="#E8457F"/>
-    <circle cx="50" cy="46" r="4.4" fill="#FFD98A"/>
-  </symbol>
-
-  <!-- 场景 -->
-  <symbol id="s-field" viewBox="0 0 320 140">
-    <rect width="320" height="140" fill="#FFF3D6"/>
-    <rect y="0" width="320" height="58" fill="#BFE9FF"/>
-    <circle cx="262" cy="26" r="16" fill="#FFD98A"/>
-    <path d="M0 58h320v14H0z" fill="#8FD9A8"/>
-    <path d="M0 66c40-6 80 6 120 2s80-8 120-4 60 6 80 4v10H0z" fill="#6ECB8C"/>
-    <g fill="#FF6B91"><circle cx="30" cy="88" r="4"/><circle cx="86" cy="94" r="4"/><circle cx="142" cy="90" r="4"/><circle cx="198" cy="96" r="4"/><circle cx="254" cy="90" r="4"/></g>
-    <g fill="#FFB524"><circle cx="58" cy="104" r="5"/><circle cx="114" cy="110" r="5"/><circle cx="170" cy="106" r="5"/><circle cx="226" cy="112" r="5"/><circle cx="282" cy="106" r="5"/></g>
-    <g fill="#FFFFFF"><circle cx="44" cy="122" r="6"/><circle cx="128" cy="128" r="6"/><circle cx="212" cy="124" r="6"/><circle cx="296" cy="128" r="6"/></g>
-  </symbol>
-  <symbol id="s-hall" viewBox="0 0 320 140">
-    <rect width="320" height="140" fill="#FFECEF"/>
-    <path d="M20 26h280l-16 84H36z" fill="#FFFFFF" stroke="#F0C8D4" stroke-width="2"/>
-    <path d="M36 26l-16 84M284 26l16 84" fill="none" stroke="#F0C8D4" stroke-width="2"/>
-    <rect x="52" y="86" width="216" height="24" fill="#FFE1EA"/>
-    <g fill="#FF7FB0"><circle cx="76" cy="96" r="7"/><circle cx="112" cy="92" r="7"/><circle cx="148" cy="98" r="7"/></g>
-    <g fill="#FFB524"><circle cx="184" cy="94" r="7"/><circle cx="220" cy="98" r="7"/><circle cx="256" cy="92" r="7"/></g>
-    <g fill="#FFFFFF"><circle cx="94" cy="72" r="5"/><circle cx="166" cy="70" r="5"/><circle cx="238" cy="74" r="5"/></g>
-  </symbol>
-  <symbol id="s-street" viewBox="0 0 320 140">
-    <rect width="320" height="140" fill="#2A2140"/>
-    <rect y="112" width="320" height="28" fill="#3B3054"/>
-    <path d="M40 34h240v6H40z" fill="#6B5A8A"/>
-    <g fill="#FFD98A"><circle cx="66" cy="46" r="5"/><circle cx="120" cy="46" r="5"/><circle cx="174" cy="46" r="5"/><circle cx="228" cy="46" r="5"/><circle cx="282" cy="46" r="5"/></g>
-    <g><path d="M56 52h48l-6 46H62z" fill="#FF7FB0"/><path d="M136 52h48l-6 46h-36z" fill="#FFB524"/><path d="M216 52h48l-6 46h-36z" fill="#8FD9A8"/></g>
-    <g fill="#FFFFFF"><circle cx="68" cy="96" r="4"/><circle cx="88" cy="92" r="4"/><circle cx="148" cy="96" r="4"/><circle cx="168" cy="92" r="4"/><circle cx="228" cy="96" r="4"/><circle cx="248" cy="92" r="4"/></g>
-  </symbol>
 </svg>
 
 <!-- ================= 导航 ================= -->
@@ -684,24 +503,20 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
         <div class="hero-facts">
           <span class="fact"><i></i>主馆 <b>9:00–18:00</b></span>
           <span class="fact"><i></i>夜场 <b>20:00–22:00</b></span>
+          <span class="brk" aria-hidden="true"></span>
           <span class="fact"><i></i>门票 <b>免费</b></span>
         </div>
       </div>
-      <div class="device" aria-hidden="true">
-        <div class="device-ring"></div>
-        <svg class="device-rays" viewBox="0 0 200 200">
-          <g transform="translate(100 100) scale(2.35) translate(-50 -50)"
-             stroke="#FFFFFF" stroke-width="2.2" stroke-linejoin="round">
-            <path d="M50 14C61 25 64 37 50 51C36 37 39 25 50 14Z" fill="#F4578C"/>
-            <path d="M50 14C61 25 64 37 50 51C36 37 39 25 50 14Z" fill="#FFB524" transform="rotate(60 50 50)"/>
-            <path d="M50 14C61 25 64 37 50 51C36 37 39 25 50 14Z" fill="#FF6B4A" transform="rotate(120 50 50)"/>
-            <path d="M50 14C61 25 64 37 50 51C36 37 39 25 50 14Z" fill="#8A5FE0" transform="rotate(180 50 50)"/>
-            <path d="M50 14C61 25 64 37 50 51C36 37 39 25 50 14Z" fill="#38B0E8" transform="rotate(240 50 50)"/>
-            <path d="M50 14C61 25 64 37 50 51C36 37 39 25 50 14Z" fill="#0FA968" transform="rotate(300 50 50)"/>
-          </g>
-        </svg>
-        <div class="device-core"><span>斗南</span></div>
-      </div>
+      <figure class="device" aria-label="花市实景照片 / Flower market photos">
+        <img class="on" src="img/hero-1.webp" alt="" width="800" height="800" fetchpriority="high">
+        <img src="img/hero-2.webp" alt="" loading="lazy" width="800" height="800">
+        <img src="img/hero-3.webp" alt="" loading="lazy" width="800" height="800">
+        <img src="img/hero-4.webp" alt="" loading="lazy" width="800" height="800">
+        <img src="img/hero-5.webp" alt="" loading="lazy" width="800" height="800">
+        <img src="img/hero-6.webp" alt="" loading="lazy" width="800" height="800">
+        <figcaption class="device-tag">亚洲花都</figcaption>
+        <div class="device-dots" aria-label="切换照片 / Switch photos"></div>
+      </figure>
     </div>
     <div class="hero-band" aria-hidden="true">
       <i style="background:#FF3D6E"></i><i style="background:#FF7A3D"></i><i style="background:#F5B722"></i>
@@ -761,10 +576,10 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
     <div class="j-road reveal" aria-hidden="true">
       <svg viewBox="0 0 1200 90" preserveAspectRatio="none">
         <path d="M0 62C150 62 210 20 360 20S570 62 720 62s210-42 360-42 60 22 120 22"
-              fill="none" stroke="rgba(255,255,255,.34)" stroke-width="3"
+              fill="none" stroke="rgba(46,42,38,.16)" stroke-width="3"
               stroke-linecap="round" stroke-dasharray="1 13"/>
         <path d="M0 62C150 62 210 20 360 20S570 62 720 62s210-42 360-42 60 22 120 22"
-              fill="none" stroke="rgba(255,255,255,.9)" stroke-width="3"
+              fill="none" stroke="rgba(216,27,82,.62)" stroke-width="3"
               stroke-linecap="round" stroke-dasharray="0 14" id="roadDash"/>
       </svg>
     </div>
@@ -969,7 +784,7 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
       <article class="tl-item reveal">
         <p class="tl-time">02:00<small>深夜 · 花田</small></p>
         <div class="tl-body">
-          <div class="tl-pic"><svg viewBox="0 0 320 140" preserveAspectRatio="xMidYMid slice" role="img" aria-label="深夜的花田"><use href="#s-field"/></svg></div>
+          <div class="tl-pic"><img src="img/field.webp" alt="连片的花田" loading="lazy" width="760" height="460"></div>
           <h3 class="tl-place">花在赶路</h3>
           <p class="tl-text">大多数人睡熟的时候，周边产区的采收和预冷正在收尾，装花的车一辆接一辆往市场方向开。你在白天看到的那片整齐花海，此刻正被一扎扎搬上车。</p>
         </div>
@@ -977,7 +792,7 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
       <article class="tl-item reveal">
         <p class="tl-time">10:00<small>上午 · 主馆</small></p>
         <div class="tl-body">
-          <div class="tl-pic"><svg viewBox="0 0 320 140" preserveAspectRatio="xMidYMid slice" role="img" aria-label="上午的花花世界主馆"><use href="#s-hall"/></svg></div>
+          <div class="tl-pic"><img src="img/hall.webp" alt="花市摊位上陈列的鲜花" loading="lazy" width="760" height="460"></div>
           <h3 class="tl-place">最好逛的时候</h3>
           <p class="tl-text">开馆一两个小时，花刚上架、水还新鲜，品种也最全。玫瑰、百合、洋桔梗一桶桶排开，颜色浓得有点不真实。这个时候拍照光线也最好。</p>
         </div>
@@ -985,7 +800,7 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
       <article class="tl-item reveal">
         <p class="tl-time">20:00<small>夜场 · 花街</small></p>
         <div class="tl-body">
-          <div class="tl-pic"><svg viewBox="0 0 320 140" preserveAspectRatio="xMidYMid slice" role="img" aria-label="夜晚的花街"><use href="#s-street"/></svg></div>
+          <div class="tl-pic"><img src="img/night.webp" alt="灯光下的夜间花市" loading="lazy" width="760" height="460"></div>
           <h3 class="tl-place">灯下的另一面</h3>
           <p class="tl-text">一个小时的消毒整理结束后，夜场开门。灯串亮起来，白天的交易区变成了散步的地方。十块钱一大把的满天星，有人抱着花走出来，连背影都带着香气。</p>
         </div>
@@ -1007,7 +822,7 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
         </div>
         <p class="f-decl">
           这是一个<b>非官方、非盈利</b>的公益介绍页面，不提供商业推广、商家推荐或代购服务。
-          站内花卉与场景图形均为原创 SVG 插画，不含第三方素材。
+          站内实景照片取自 Pexels 免费图库，为花卉与花市实景参考，并非斗南实地拍摄。
           页面所列开放时间、交通与花期等信息整理自公开资料，尚未逐一实地核实，出行前请以市场方最新公告为准。
         </p>
       </div>
@@ -1105,18 +920,18 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
 
   /* 花历数据：months 为 1-12 的上市月份 */
   var DATA = [
-    {cn:"月季",   en:"ROSE",        sym:"f-rose",       m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，冬春品质最好",   pkEn:"Year-round; best in winter and spring"},
-    {cn:"百合",   en:"LILY",        sym:"f-lily",       m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，3–9 月量大",    pkEn:"Year-round; largest volume March–September"},
-    {cn:"康乃馨", en:"CARNATION",   sym:"f-carnation",  m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，母亲节前后最旺", pkEn:"Year-round; peaks around Mother's Day"},
-    {cn:"非洲菊", en:"GERBERA",     sym:"f-gerbera",    m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，色彩最丰富",     pkEn:"Year-round; the widest range of colours"},
-    {cn:"满天星", en:"GYPSOPHILA",  sym:"f-gypsophila", m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，常作配花",       pkEn:"Year-round; usually used as a filler"},
-    {cn:"洋桔梗", en:"LISIANTHUS",  sym:"f-lisianthus", m:[3,4,5,6,7,8,9,10,11],       peak:"5–10 月为盛期",           pkEn:"Peak season May–October"},
-    {cn:"绣球",   en:"HYDRANGEA",   sym:"f-hydrangea",  m:[4,5,6,7,8,9],               peak:"4–9 月，夏季最盛",        pkEn:"April–September, best in summer"},
-    {cn:"向日葵", en:"SUNFLOWER",   sym:"f-sunflower",  m:[5,6,7,8,9,10],              peak:"5–10 月",                 pkEn:"May–October"},
-    {cn:"勿忘我", en:"FORGET-ME-NOT",sym:"f-forget",    m:[11,12,1,2,3,4,5],           peak:"11 月至次年 5 月",         pkEn:"November to May"},
-    {cn:"马蹄莲", en:"CALLA LILY",  sym:"f-calla",      m:[11,12,1,2,3,4],             peak:"11 月至次年 4 月",         pkEn:"November to April"},
-    {cn:"郁金香", en:"TULIP",       sym:"f-tulip",      m:[1,2,3,4],                   peak:"1–4 月，春季限定",        pkEn:"January–April, spring only"},
-    {cn:"蝴蝶兰", en:"ORCHID",      sym:"f-orchid",     m:[10,11,12,1,2,3],            peak:"10 月至次年 3 月",         pkEn:"October to March"}
+    {cn:"月季",   en:"ROSE",        img:"rose",       m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，冬春品质最好",   pkEn:"Year-round; best in winter and spring"},
+    {cn:"百合",   en:"LILY",        img:"lily",       m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，3–9 月量大",    pkEn:"Year-round; largest volume March–September"},
+    {cn:"康乃馨", en:"CARNATION",   img:"carnation",  m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，母亲节前后最旺", pkEn:"Year-round; peaks around Mother's Day"},
+    {cn:"非洲菊", en:"GERBERA",     img:"gerbera",    m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，色彩最丰富",     pkEn:"Year-round; the widest range of colours"},
+    {cn:"满天星", en:"GYPSOPHILA",  img:"gypsophila", m:[1,2,3,4,5,6,7,8,9,10,11,12], peak:"全年供应，常作配花",       pkEn:"Year-round; usually used as a filler"},
+    {cn:"洋桔梗", en:"LISIANTHUS",  img:"lisianthus", m:[3,4,5,6,7,8,9,10,11],       peak:"5–10 月为盛期",           pkEn:"Peak season May–October"},
+    {cn:"绣球",   en:"HYDRANGEA",   img:"hydrangea",  m:[4,5,6,7,8,9],               peak:"4–9 月，夏季最盛",        pkEn:"April–September, best in summer"},
+    {cn:"向日葵", en:"SUNFLOWER",   img:"sunflower",  m:[5,6,7,8,9,10],              peak:"5–10 月",                 pkEn:"May–October"},
+    {cn:"勿忘我", en:"FORGET-ME-NOT",img:"forget",    m:[11,12,1,2,3,4,5],           peak:"11 月至次年 5 月",         pkEn:"November to May"},
+    {cn:"马蹄莲", en:"CALLA LILY",  img:"calla",      m:[11,12,1,2,3,4],             peak:"11 月至次年 4 月",         pkEn:"November to April"},
+    {cn:"郁金香", en:"TULIP",       img:"tulip",      m:[1,2,3,4],                   peak:"1–4 月，春季限定",        pkEn:"January–April, spring only"},
+    {cn:"蝴蝶兰", en:"ORCHID",      img:"orchid",     m:[10,11,12,1,2,3],            peak:"10 月至次年 3 月",         pkEn:"October to March"}
   ];
 
   var cal = document.getElementById("cal");
@@ -1139,7 +954,7 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
       cells += "<s class='" + (d.m.indexOf(i) > -1 ? "on" : "") + "'></s>";
     }
     card.innerHTML =
-      "<div class='b-pic'><svg viewBox='0 0 100 100' role='img' aria-label='" + d.cn + "'><use href='#" + d.sym + "'/></svg></div>" +
+      "<div class='b-pic'><img src='img/" + d.img + ".webp' alt='" + d.cn + "' loading='lazy' width='440' height='440'></div>" +
       "<div class='b-body'>" +
         "<h3 class='b-cn'>" + d.cn + "</h3>" +
         "<p class='b-en'>" + d.en + "</p>" +
@@ -1194,15 +1009,15 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
       var d = DATA[Number(cards[i].dataset.i)];
       var cnEl = cards[i].querySelector(".b-cn");
       var pkEl = cards[i].querySelector(".b-peak");
-      var svg = cards[i].querySelector("svg");
+      var img = cards[i].querySelector(".b-pic img");
       if (LANG === "en") {
         cnEl.textContent = d.en.charAt(0) + d.en.slice(1).toLowerCase();
         pkEl.textContent = d.pkEn;
-        if (svg) svg.setAttribute("aria-label", d.en.charAt(0) + d.en.slice(1).toLowerCase());
+        if (img) img.alt = d.en.charAt(0) + d.en.slice(1).toLowerCase();
       } else {
         cnEl.textContent = d.cn;
         pkEl.textContent = d.peak;
-        if (svg) svg.setAttribute("aria-label", d.cn);
+        if (img) img.alt = d.cn;
       }
     }
     for (var b = 0; b < btns.length; b++) {
@@ -1232,7 +1047,7 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
   /* 飘花：瓣形与配色取自 dounan-logo.svg */
   if (!reduce) {
     var PL = document.getElementById("petals");
-    var PAL = ["#F4578C","#FFB524","#FF6B4A","#8A5FE0","#38B0E8","#0FA968"];
+    var PAL = ["#F4578C","#E9A8BC","#F0B24A"];
     var PETAL = "M50 14C61 25 64 37 50 51C36 37 39 25 50 14Z";
     var count = window.innerWidth < 720 ? 10 : 18;
     var pfrag = document.createDocumentFragment();
@@ -1244,14 +1059,58 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
       el.style.height = size + "px";
       el.style.left = (Math.random() * 100).toFixed(2) + "%";
       el.style.setProperty("--dx", ((Math.random() * 150 - 75) | 0) + "px");
-      el.style.setProperty("--o", (0.34 + Math.random() * 0.34).toFixed(2));
+      el.style.setProperty("--o", (0.2 + Math.random() * 0.22).toFixed(2));
       el.style.animationDuration = (17 + Math.random() * 20).toFixed(1) + "s";
       el.style.animationDelay = "-" + (Math.random() * 26).toFixed(1) + "s";
-      el.innerHTML = "<svg viewBox='0 0 100 100'><path d='" + PETAL + "' fill='" + PAL[p % 6] + "'/></svg>";
+      el.innerHTML = "<svg viewBox='0 0 100 100'><path d='" + PETAL + "' fill='" + PAL[p % 3] + "'/></svg>";
       pfrag.appendChild(el);
     }
     PL.appendChild(pfrag);
   }
+
+  /* Hero 照片轮播：5 秒自动切换，悬停/切离标签页暂停；
+     prefers-reduced-motion 时不自动播，仍可点圆点手动切换 */
+  (function(){
+    var slides = document.querySelectorAll(".device img");
+    if (slides.length < 2) return;
+    var dotsBox = document.querySelector(".device-dots");
+    var frag = document.createDocumentFragment();
+    slides.forEach(function(_, i){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.setAttribute("aria-label", "第 " + (i + 1) + " 张照片 / Photo " + (i + 1));
+      frag.appendChild(b);
+    });
+    dotsBox.appendChild(frag);
+    var dots = dotsBox.querySelectorAll("button");
+    var cur = 0, timer = null;
+    function go(n){
+      slides[cur].classList.remove("on");
+      dots[cur].classList.remove("on");
+      dots[cur].removeAttribute("aria-current");
+      cur = (n + slides.length) % slides.length;
+      slides[cur].classList.add("on");
+      dots[cur].classList.add("on");
+      dots[cur].setAttribute("aria-current", "true");
+    }
+    function stop(){ if (timer) { clearInterval(timer); timer = null; } }
+    function play(){
+      if (reduce || timer) return;
+      timer = setInterval(function(){ go(cur + 1); }, 5000);
+    }
+    dots.forEach(function(d, i){
+      d.addEventListener("click", function(){ go(i); play(); });
+    });
+    var box = document.querySelector(".device");
+    box.addEventListener("mouseenter", stop);
+    box.addEventListener("mouseleave", play);
+    document.addEventListener("visibilitychange", function(){
+      document.hidden ? stop() : play();
+    });
+    dots[0].classList.add("on");
+    dots[0].setAttribute("aria-current", "true");
+    play();
+  })();
 
   /* 旅程虚线路径动画
      必须做 IntersectionObserver 能力检测：不支持时若照旧把 dashoffset 设为 len，
@@ -1360,9 +1219,10 @@ footer{background:var(--paper-2);border-top:1px solid var(--line);padding:clamp(
       "An hour or two after opening: the flowers have just been put out, the water is fresh, and the range is at its widest. Roses, lilies and lisianthus stand bucket after bucket, in colours that look almost unreal. The light is best for photographs now, too.",
       "After an hour of cleaning and resetting, the night session opens. Strings of lights come on and the daytime trading floor turns into somewhere to walk. Ten yuan buys an armful of gypsophila; someone walks out with flowers in their arms, smelling of them all the way home."
     ]},
+    {s:".tl-pic img", a:["Flower fields in bloom","Fresh flowers on market stalls","The night market under lights"]},
 
     {s:"#blooms p[style]", v:["Months shown are approximate availability from Yunnan growers and shift with weather and variety — treat them as a rough guide only."]},
-    {s:".f-decl", v:["This is an <b>unofficial, non-profit</b> public information page. It carries no advertising, no shop recommendations and no buying service. All flower and scene graphics on this site are original SVG illustrations with no third-party material. Opening hours, transport and flowering times are compiled from public sources and have not all been verified on the ground — please check the market's latest notices before you travel."]},
+    {s:".f-decl", v:["This is an <b>unofficial, non-profit</b> public information page. It carries no advertising, no shop recommendations and no buying service. The photographs on this site come from the free Pexels library and show real flowers and flower markets — they are not photos taken at Dounan. Opening hours, transport and flowering times are compiled from public sources and have not all been verified on the ground — please check the market's latest notices before you travel."]},
     {s:".f-links a", v:["What is Dounan","The Journey","Flower Calendar","How to Visit","A Day","Back to top"]},
     {s:".f-bottom > span", v:[
       "Found something wrong? Write to us <span class=\"f-mail\">imuse@163.com</span>",
